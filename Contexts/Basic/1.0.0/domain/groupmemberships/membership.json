@@ -1,0 +1,32 @@
+[
+    {
+        "Name": "Max",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Group2"
+    },
+    {
+        "Name": "Maria",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Group2"
+    },
+    {
+        "Name": "Myrthe",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Group1"
+    },
+    {
+        "Name": "Mark",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Group1"
+    },
+    {
+        "Name": "Matthias",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Group1"
+    }
+]

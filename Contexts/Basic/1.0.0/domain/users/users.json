@@ -1,0 +1,27 @@
+[
+    {
+        "SamAccountName": "Max",
+        "UserPrincipalName": "Max@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+    },
+    {
+        "SamAccountName": "Maria",
+        "UserPrincipalName": "Maria@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+    },
+    {
+        "SamAccountName": "Myrthe",
+        "UserPrincipalName": "Myrthe@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+    },
+    {
+        "SamAccountName": "Mark",
+        "UserPrincipalName": "Mark@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+    },
+    {
+        "SamAccountName": "Matthias",
+        "UserPrincipalName": "Matthias@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+    }
+]

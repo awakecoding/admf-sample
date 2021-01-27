@@ -1,0 +1,9 @@
+{
+  "Version": "1.0.0",
+  "Weight": 50,
+  "Description": "A basic Context with barely any content",
+  "Author": "Friedrich Weinmann",
+  "Prerequisites": [],
+  "MutuallyExclusive": [],
+  "Group": "Default"
+}

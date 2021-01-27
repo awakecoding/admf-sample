@@ -1,0 +1,14 @@
+[
+    {
+        "Name": "Group1",
+        "Path": "OU=Groups,OU=Contoso,%DomainDN%",
+        "Description": "Whatever 1",
+        "Scope": "DomainLocal"
+    },
+    {
+        "Name": "Group2",
+        "Path": "OU=Groups,OU=Contoso,%DomainDN%",
+        "Description": "Whatever 2",
+        "Scope": "DomainLocal"
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "Name": "Contoso",
+        "Description": "Root container for company assets",
+        "Path": "%DomainDN%"
+    },
+    {
+        "Name": "Users",
+        "Description": "User Container",
+        "Path": "OU=Contoso,%DomainDN%"
+    },
+    {
+        "Name": "Groups",
+        "Description": "Group Container",
+        "Path": "OU=Contoso,%DomainDN%"
+    }
+]
