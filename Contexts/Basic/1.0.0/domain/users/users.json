@@ -1,27 +1,42 @@
 [
     {
-        "SamAccountName": "Max",
-        "UserPrincipalName": "Max@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+        "SamAccountName": "dford",
+        "GivenName": "David",
+        "Surname": "Ford",
+        "UserPrincipalName": "dford@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     },
     {
-        "SamAccountName": "Maria",
-        "UserPrincipalName": "Maria@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+        "SamAccountName": "ryoung",
+        "GivenName": "Robert",
+        "Surname": "Young",
+        "UserPrincipalName": "ryoung@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     },
     {
-        "SamAccountName": "Myrthe",
-        "UserPrincipalName": "Myrthe@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+        "SamAccountName": "bowens",
+        "GivenName": "Barbara",
+        "Surname": "Owens",
+        "UserPrincipalName": "bowens@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     },
     {
-        "SamAccountName": "Mark",
-        "UserPrincipalName": "Mark@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+        "SamAccountName": "lgriffin",
+        "GivenName": "Laura",
+        "Surname": "Griffin",
+        "UserPrincipalName": "lgriffin@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     },
     {
-        "SamAccountName": "Matthias",
-        "UserPrincipalName": "Matthias@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%"
+        "SamAccountName": "jevans",
+        "GivenName": "John",
+        "Surname": "Evans",
+        "UserPrincipalName": "jevans@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     }
 ]
