@@ -3,30 +3,78 @@
         "Name": "dford",
         "Domain": "%DomainName%",
         "ItemType": "User",
-        "Group": "Group2"
+        "Group": "Management"
     },
     {
         "Name": "ryoung",
         "Domain": "%DomainName%",
         "ItemType": "User",
-        "Group": "Group2"
+        "Group": "Management"
     },
     {
         "Name": "bowens",
         "Domain": "%DomainName%",
         "ItemType": "User",
-        "Group": "Group1"
+        "Group": "Management"
     },
     {
         "Name": "lgriffin",
         "Domain": "%DomainName%",
         "ItemType": "User",
-        "Group": "Group1"
+        "Group": "Inside Sales"
     },
     {
         "Name": "jevans",
         "Domain": "%DomainName%",
         "ItemType": "User",
-        "Group": "Group1"
+        "Group": "Inside Sales"
+    },
+    {
+        "Name": "kclark",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Inside Sales"
+    },
+    {
+        "Name": "rwallace",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Inside Sales"
+    },
+    {
+        "Name": "jjohnson",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Inside Sales"
+    },
+    {
+        "Name": "kfoster",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Customer Success"
+    },
+    {
+        "Name": "dcollins",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Customer Success"
+    },
+    {
+        "Name": "smiller",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Customer Success"
+    },
+    {
+        "Name": "mmorgan",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "Customer Success"
+    },
+    {
+        "Name": "ldap-reader",
+        "Domain": "%DomainName%",
+        "ItemType": "User",
+        "Group": "ldap-readers"
     }
 ]

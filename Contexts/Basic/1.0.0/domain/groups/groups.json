@@ -1,14 +1,26 @@
 [
     {
-        "Name": "Group1",
+        "Name": "Management",
         "Path": "OU=Groups,OU=Contoso,%DomainDN%",
-        "Description": "Whatever 1",
+        "Description": "Management",
         "Scope": "DomainLocal"
     },
     {
-        "Name": "Group2",
+        "Name": "Inside Sales",
         "Path": "OU=Groups,OU=Contoso,%DomainDN%",
-        "Description": "Whatever 2",
+        "Description": "Inside Sales",
+        "Scope": "DomainLocal"
+    },
+    {
+        "Name": "Customer Success",
+        "Path": "OU=Groups,OU=Contoso,%DomainDN%",
+        "Description": "Customer Success",
+        "Scope": "DomainLocal"
+    },
+    {
+        "Name": "ldap-readers",
+        "Path": "OU=Groups,OU=Contoso,%DomainDN%",
+        "Description": "LDAP readers",
         "Scope": "DomainLocal"
     }
 ]

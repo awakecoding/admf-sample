@@ -38,5 +38,67 @@
         "UserPrincipalName": "jevans@%DomainFqdn%",
         "Path": "OU=Users,OU=Contoso,%DomainDN%",
         "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "kclark",
+        "GivenName": "Kimberly",
+        "Surname": "Clark",
+        "UserPrincipalName": "kclark@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "rwallace",
+        "GivenName": "Richard",
+        "Surname": "Wallace",
+        "UserPrincipalName": "rwallace@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "jjohnson",
+        "GivenName": "Jessica",
+        "Surname": "Johnson",
+        "UserPrincipalName": "jjohnson@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "kfoster",
+        "GivenName": "Kimberly",
+        "Surname": "Foster",
+        "UserPrincipalName": "kfoster@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "dcollins",
+        "GivenName": "Donna",
+        "Surname": "Collins",
+        "UserPrincipalName": "dcollins@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "smiller",
+        "GivenName": "Sharon",
+        "Surname": "Miller",
+        "UserPrincipalName": "smiller@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "mmorgan",
+        "GivenName": "Michael",
+        "Surname": "Morgan",
+        "UserPrincipalName": "mmorgan@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
+    },
+    {
+        "SamAccountName": "ldap-reader",
+        "UserPrincipalName": "ldap-reader@%DomainFqdn%",
+        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "PasswordNeverExpires": true
     }
 ]

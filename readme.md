@@ -120,22 +120,74 @@ Invoke-AdmfDomain -Server contoso.com
 
 ## Set user passwords
 
-You can then set a dummy/unsafe password for all users (requires improvement):
+References:
+ * [Password must meet complexity requirements](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/password-must-meet-complexity-requirements)
+
+Generate random test passwords for all users and export them to AccountPasswords.json (unsafe):
 
 ```powershell
-$UnsafePassword = $(ConvertTo-SecureString -AsPlainText "Password123!" -Force)
-Get-DMUser | ForEach-Object { Set-ADAccountPassword -Identity $_.SamAccountName -NewPassword $UnsafePassword }
+function New-RandomPassword
+{
+    param(
+        [Parameter(Position=0)]
+        [int] $Length = 16
+    )
+
+    $charsets = @("abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "0123456789")
+
+    $sb = [System.Text.StringBuilder]::new()
+    $rng = [System.Security.Cryptography.RNGCryptoServiceProvider]::new()
+
+    $bytes = New-Object Byte[] 4
+
+    0 .. ($Length - 1) | % {
+        $charset = $charsets[$_ % $charsets.Count]
+        $rng.GetBytes($bytes)
+        $num = [System.BitConverter]::ToUInt32($bytes, 0)
+        $sb.Append($charset[$num % $charset.Length]) | Out-Null
+    }
+
+    return $sb.ToString()
+}
+
+Set-AdmfContext -Server contoso.com -Context Basic
+
+$AccountPasswords = @()
+Get-DMUser | ForEach-Object {
+    $AccountPasswords += [PSCustomObject]@{
+        Identity = $_.SamAccountName
+        Password = $(New-RandomPassword 16)
+    }
+}
+
+Set-Content -Path "AccountPasswords.json" -Value $($AccountPasswords | ConvertTo-Json) -Force
+```
+
+Import and apply the account passwords to Active Directory users:
+
+```powershell
+$AccountPasswords = $(Get-Content -Path "AccountPasswords.json") | ConvertFrom-Json
+$AccountPasswords | ForEach-Object {
+    $Identity = $_.Identity
+    $Password = $(ConvertTo-SecureString -AsPlainText $_.Password -Force)
+    Write-Host "Setting password for $Identity"
+    try {
+        Set-ADAccountPassword -Identity $Identity -NewPassword $Password -Reset
+    } catch [Exception] {
+        echo $_.Exception.GetType().FullName, $_.Exception.Message
+    }
+}
 ```
 
 The username / password can then be validated using the Test-ADCredentials helper function:
 
 ```powershell
 function Test-ADCredentials {
-	param($username, $password, $domain)
-	Add-Type -AssemblyName System.DirectoryServices.AccountManagement
-	$ct = [System.DirectoryServices.AccountManagement.ContextType]::Domain
-	$pc = New-Object System.DirectoryServices.AccountManagement.PrincipalContext($ct, $domain)
-	$pc.ValidateCredentials($username, $password)
+    param($username, $password, $domain)
+    Add-Type -AssemblyName System.DirectoryServices.AccountManagement
+    $ct = [System.DirectoryServices.AccountManagement.ContextType]::Domain
+    $pc = New-Object System.DirectoryServices.AccountManagement.PrincipalContext($ct, $domain)
+    $pc.ValidateCredentials($username, $password)
 }
 ```
 
