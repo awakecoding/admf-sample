@@ -5,6 +5,8 @@
 
 This guide assumes a fresh Windows Server 2019 virtual machine as a starting point, starting from scratch. The goal is to create an isolated domain controller with a few users and groups, along with test passwords using ADMF. Everything is done locally with no PowerShell remoting involved to keep it small and simple.
 
+## Install prerequisites
+
 Open PowerShell as an Administrator:
 
 Update PowerShellGet (fresh installation only):
@@ -23,14 +25,16 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 Install git (optional):
 
 ```powershell
-choco install git
+choco install --yes git
 ```
 
 Install ADMF PowerShell module:
 
 ```powershell
-Install-Module -Name ADMF -Scope AllUsers
+Install-Module -Name ADMF -Scope AllUsers -Force
 ```
+
+## Import sample configuration
 
 Clone or copy 'admf-sample' directory and change directory:
 
@@ -49,6 +53,8 @@ Name   PathExists Path
 ----   ---------- ----
 sample True       C:\Users\wayk-admin\admf-sample\Contexts
 ```
+
+## Promote to domain controller
 
 Before promoting the machine to domain controller, review the following:
  * The machine is configured with a static IP address
@@ -81,6 +87,8 @@ Install-DCRootDomain -DnsName contoso.com
 
 In the interactive prompt, select "Basic", then click OK. The machine will restart once the operation is complete. The next startup can take a few minutes. If it appears stuck on "Please wait for Group Policy Client", just wait a little longer, it is normal.
 
+## Apply domain configuration
+
 Open PowerShell as an Administrator, then test the ADMF domain configuration:
 
 ```powershell
@@ -110,6 +118,8 @@ Invoke-AdmfDomain -Server contoso.com
 [21:52:59][Invoke-AdmfDomain] Skipping updates to Acls as there is no configuration data available
 ```
 
+## Set user passwords
+
 You can then set a dummy/unsafe password for all users (requires improvement):
 
 ```powershell
@@ -135,3 +145,47 @@ True
 PS > Test-ADCredentials -Domain 'contoso.com' -Username 'dford' -Password 'Invalid123!'
 False
 ```
+
+## Configure LDAPS
+
+Using a self-signed certificate:
+
+```powershell
+$Domain = Get-ADDomain
+$DomainName = $Domain.DnsRoot
+$DnsName = $Env:ComputerName, $DomainName -Join '.'
+$NtdsPath = 'HKLM:/Software/Microsoft/Cryptography/Services/NTDS/SystemCertificates/My/Certificates'
+
+$MyCert = New-SelfSignedCertificate -DnsName $DnsName -CertStoreLocation cert:/LocalMachine/My
+$Thumbprint = $MyCert.Thumbprint
+
+if (-Not (Test-Path $NtdsPath)) {
+    New-Item $NtdsPath -Force
+}
+
+Copy-Item -Path HKLM:/Software/Microsoft/SystemCertificates/My/Certificates/$Thumbprint -Destination $NtdsPath
+```
+
+To apply the changes, you can either reboot the machine or tell the LDAP server to reload the certificate. Create a text file "ldaps-renew.txt" with the following contents:
+
+```
+dn:
+changetype: modify
+add: renewServerCertificate
+renewServerCertificate: 1
+-
+```
+
+Then call `ldifde -i -f ldaps-renew.txt`
+
+Using Active Directory Certificate Services (AD CS):
+
+ * [Guide to setup LDAPS on Windows Server](https://www.miniorange.com/guide-to-setup-ldaps-on-windows-server)
+ * [How to set up secure LDAP for Active Directory](https://astrix.co.uk/news/2020/1/31/how-to-set-up-secure-ldap-for-active-directory#ADCS)
+
+```powershell
+Install-WindowsFeature -Name AD-Certificate
+Install-AdcsCertificationAuthority -CAType EnterpriseRootCa -Force
+```
+
+Restart the domain controller to apply the changes.
