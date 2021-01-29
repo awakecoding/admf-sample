@@ -232,8 +232,13 @@ Then call `ldifde -i -f ldaps-renew.txt`
 
 Using Active Directory Certificate Services (AD CS):
 
+References:
  * [Guide to setup LDAPS on Windows Server](https://www.miniorange.com/guide-to-setup-ldaps-on-windows-server)
  * [How to set up secure LDAP for Active Directory](https://astrix.co.uk/news/2020/1/31/how-to-set-up-secure-ldap-for-active-directory#ADCS)
+ * [Enable LDAP over SSL with a third-party certification authority](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/enable-ldap-over-ssl-3rd-certification-authority)
+ * [Troubleshoot LDAP over SSL connection problems](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/ldap-over-ssl-connection-issues)
+ * [Confirming a Domain Controller has a working LDAPS configuration](https://osirium.com/how-to/confirm-a-domain-controller-has-ldaps-enabled)
+ * [Verify LDAP over SSL/TLS (LDAPS) and CA Certificate Using Ldp.exe](https://www.cisco.com/c/en/us/support/docs/security/firesight-management-center/118761-technote-firesight-00.html)
 
 ```powershell
 Install-WindowsFeature -Name AD-Certificate

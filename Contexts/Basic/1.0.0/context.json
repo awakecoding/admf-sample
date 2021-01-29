@@ -1,8 +1,8 @@
 {
   "Version": "1.0.0",
   "Weight": 50,
-  "Description": "A basic Context with barely any content",
-  "Author": "Friedrich Weinmann",
+  "Description": "A basic Context with sample content",
+  "Author": "Marc-André Moreau",
   "Prerequisites": [],
   "MutuallyExclusive": [],
   "Group": "Default"

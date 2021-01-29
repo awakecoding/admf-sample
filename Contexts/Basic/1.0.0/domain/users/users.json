@@ -4,7 +4,7 @@
         "GivenName": "David",
         "Surname": "Ford",
         "UserPrincipalName": "dford@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -12,7 +12,7 @@
         "GivenName": "Robert",
         "Surname": "Young",
         "UserPrincipalName": "ryoung@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -20,7 +20,7 @@
         "GivenName": "Barbara",
         "Surname": "Owens",
         "UserPrincipalName": "bowens@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -28,7 +28,7 @@
         "GivenName": "Laura",
         "Surname": "Griffin",
         "UserPrincipalName": "lgriffin@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -36,7 +36,7 @@
         "GivenName": "John",
         "Surname": "Evans",
         "UserPrincipalName": "jevans@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -44,7 +44,7 @@
         "GivenName": "Kimberly",
         "Surname": "Clark",
         "UserPrincipalName": "kclark@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -52,7 +52,7 @@
         "GivenName": "Richard",
         "Surname": "Wallace",
         "UserPrincipalName": "rwallace@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -60,7 +60,7 @@
         "GivenName": "Jessica",
         "Surname": "Johnson",
         "UserPrincipalName": "jjohnson@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -68,7 +68,7 @@
         "GivenName": "Kimberly",
         "Surname": "Foster",
         "UserPrincipalName": "kfoster@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -76,7 +76,7 @@
         "GivenName": "Donna",
         "Surname": "Collins",
         "UserPrincipalName": "dcollins@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -84,7 +84,7 @@
         "GivenName": "Sharon",
         "Surname": "Miller",
         "UserPrincipalName": "smiller@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
@@ -92,13 +92,15 @@
         "GivenName": "Michael",
         "Surname": "Morgan",
         "UserPrincipalName": "mmorgan@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     },
     {
         "SamAccountName": "ldap-reader",
+        "GivenName": "LDAP",
+        "Surname": "Reader",
         "UserPrincipalName": "ldap-reader@%DomainFqdn%",
-        "Path": "OU=Users,OU=Contoso,%DomainDN%",
+        "Path": "OU=Users,OU=%RootOU%,%DomainDN%",
         "PasswordNeverExpires": true
     }
 ]
