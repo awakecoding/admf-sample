@@ -28,6 +28,28 @@ Install git (optional):
 choco install --yes git
 ```
 
+Install PowerShell 7 (optional):
+
+```powershell
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
+```
+
+Enable SSH server (optional):
+
+```powershell
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+Start-Service sshd
+Set-Service -Name sshd -StartupType 'Automatic'
+```
+
+Enable PowerShell Remoting over SSH (optional):
+
+```powershell
+Install-Module -Name Microsoft.PowerShell.RemotingTools
+Enable-SSHRemoting
+Restart-Service sshd
+```
+
 Install ADMF PowerShell module:
 
 ```powershell
@@ -57,6 +79,7 @@ sample True       C:\Users\wayk-admin\admf-sample\Contexts
 ## Promote to domain controller
 
 Before promoting the machine to domain controller, review the following:
+
  * The machine is configured with a static IP address
  * The machine name is final (can't be changed after)
 
@@ -66,56 +89,59 @@ Install Active Directory Domain Services with the management tools:
 Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
 ```
 
-Make sure that the Active Directory Web Services (ADWS) service is enabled and started:
+Create the forest and promote the machine to domain controller. Pay careful attention to chosen DNS and NetBios domain names, because there is no going back from this point. [Best practices](https://www.varonis.com/blog/active-directory-domain-naming-best-practices/) recommend using the "ad" or "corp" subdomain of a domain under your control to avoid conflicts with public DNS records.
+
+For instance, if you own "contoso.com", then the recommended DNS domain name should be "ad.contoso.com" instead of "contoso.local" or "contoso.loc". If you do not own a domain name, simply use and unassigned TLD such as ".loc" and it should work just fine for now.
+
+As for the NetBios domain name, is it the one that appears in the old "DOMAIN\username" format. If you don't specify it explicitly, the "ad" subdomain will be used, which is probably not desirable. In most cases, the NetBios domain name is simply the organization name, like "CONTOSO". There are many naming restrictions, but the [most important to remember is the maximum of 15 characters](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/naming-conventions-for-computer-domain-site-ou#netbios-domain-names).
+
+Select the context non-interactively using `-NoDomain` because the domain does not exist yet:
 
 ```powershell
-Set-Service ADWS -StartupType Automatic
-Start-Service ADWS
+Set-AdmfContext -Server $Env:ComputerName -Context 'Basic' -NoDomain
 ```
 
-Attempt selecting the context non-interactively (doesn't work yet):
+Set the $UserDnsDomain and $UserDomain variables (don't copy/paste them!) with the appropriate values for your domain, then run the `Install-DCRootDomain` command to create the domain forest and promote the machine to a domain controller:
 
 ```powershell
-Set-AdmfContext -Server $Env:ComputerName -Context Basic -DefineOnly
-```
-
-Create the forest 'contoso.com' and promote the machine to domain controller:
-
-```powershell
-Install-DCRootDomain -DnsName contoso.com
+$UserDnsDomain = 'ad.contoso.com'
+$UserDomain = 'CONTOSO'
+Install-DCRootDomain -DnsName $UserDnsDomain -NetBiosName $UserDomain
 ```
 
 In the interactive prompt, select "Basic", then click OK. The machine will restart once the operation is complete. The next startup can take a few minutes. If it appears stuck on "Please wait for Group Policy Client", just wait a little longer, it is normal.
 
 ## Apply domain configuration
 
+Reconnect to the machine using the new domain administrator account.
+
 Open PowerShell as an Administrator, then test the ADMF domain configuration:
 
 ```powershell
-Set-AdmfContext -Server contoso.com -Context Basic
-Test-AdmfDomain -Server contoso.com
+Set-AdmfContext -Server $UserDnsDomain -Context Basic
+Test-AdmfDomain -Server $UserDnsDomain
 ```
 
 Take a deep breath, then apply the domain configuration:
 
 ```powershell
-Invoke-AdmfDomain -Server contoso.com
+Invoke-AdmfDomain -Server $UserDnsDomain
 
-[21:52:56][Resolve-DomainController] Resolved domain controller to use. Operating against NOW-IT-DC.contoso.com
-[21:52:56][Invoke-AdmfDomain] Performing updates to OrganizationalUnits - Create & Modify against NOW-IT-DC.contoso.com
-[21:52:56][Invoke-AdmfDomain] Performing updates to Groups against NOW-IT-DC.contoso.com
-[21:52:57][Invoke-AdmfDomain] Performing updates to Users against NOW-IT-DC.contoso.com
-[21:52:58][Invoke-AdmfDomain] Skipping updates to ServiceAccounts as there is no configuration data available
-[21:52:58][Invoke-AdmfDomain] Performing updates to GroupMembership against NOW-IT-DC.contoso.com
-[21:52:59][Invoke-AdmfDomain] Skipping updates to PasswordPolicies as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to GroupPolicies - Create & Modify as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to GroupPolicyPermissions as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to GroupPolicyLinks - Create, Update & Disable unwanted Links as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to GroupPolicies - Delete as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to GroupPolicyLinks - Delete unwanted Links as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Performing updates to OrganizationalUnits - Delete against NOW-IT-DC.contoso.com
-[21:52:59][Invoke-AdmfDomain] Skipping updates to Objects as there is no configuration data available
-[21:52:59][Invoke-AdmfDomain] Skipping updates to Acls as there is no configuration data available
+[22:23:27][Resolve-DomainController] Resolved domain controller to use. Operating against NOW-IT-DC.ad.now-it.works
+[22:23:27][Invoke-AdmfDomain] Performing updates to OrganizationalUnits - Create & Modify against NOW-IT-DC.ad.now-it.works
+[22:23:28][Invoke-AdmfDomain] Performing updates to Groups against NOW-IT-DC.ad.now-it.works
+[22:23:28][Invoke-AdmfDomain] Performing updates to Users against NOW-IT-DC.ad.now-it.works
+[22:23:31][Invoke-AdmfDomain] Skipping updates to ServiceAccounts as there is no configuration data available
+[22:23:31][Invoke-AdmfDomain] Performing updates to GroupMembership against NOW-IT-DC.ad.now-it.works
+[22:23:32][Invoke-AdmfDomain] Skipping updates to PasswordPolicies as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to GroupPolicies - Create & Modify as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to GroupPolicyPermissions as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to GroupPolicyLinks - Create, Update & Disable unwanted Links as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to GroupPolicies - Delete as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to GroupPolicyLinks - Delete unwanted Links as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Performing updates to OrganizationalUnits - Delete against NOW-IT-DC.ad.now-it.works
+[22:23:32][Invoke-AdmfDomain] Skipping updates to Objects as there is no configuration data available
+[22:23:32][Invoke-AdmfDomain] Skipping updates to Acls as there is no configuration data available
 ```
 
 ## Set user passwords
@@ -150,7 +176,7 @@ function New-RandomPassword
     return $sb.ToString()
 }
 
-Set-AdmfContext -Server contoso.com -Context Basic
+Set-AdmfContext -Server $UserDnsDomain -Context Basic
 
 $AccountPasswords = @()
 Get-DMUser | ForEach-Object {
@@ -192,9 +218,9 @@ function Test-ADCredentials {
 ```
 
 ```powershell
-PS > Test-ADCredentials -Domain 'contoso.com' -Username 'dford' -Password 'Password123!'
+PS > Test-ADCredentials -Domain $UserDnsDomain -Username 'dford' -Password 'Password123!'
 True
-PS > Test-ADCredentials -Domain 'contoso.com' -Username 'dford' -Password 'Invalid123!'
+PS > Test-ADCredentials -Domain $UserDnsDomain -Username 'dford' -Password 'Invalid123!'
 False
 ```
 
@@ -220,15 +246,25 @@ Copy-Item -Path HKLM:/Software/Microsoft/SystemCertificates/My/Certificates/$Thu
 
 To apply the changes, you can either reboot the machine or tell the LDAP server to reload the certificate. Create a text file "ldaps-renew.txt" with the following contents:
 
-```
+```powershell
+$LdapRenew = @"
 dn:
 changetype: modify
 add: renewServerCertificate
 renewServerCertificate: 1
--
+- 
+"@
+
+Set-Content -Path "ldap-renew.txt" -Value $LdapRenew -Force
+
+& ldifde -i -f ldaps-renew.txt
 ```
 
-Then call `ldifde -i -f ldaps-renew.txt`
+You can now test that the LDAPS server accepts TLS connections using OpenSSL:
+
+```powershell
+openssl s_client -connect "$Env:ComputerName.$DnsDomainName`:636" -showcerts
+```
 
 Using Active Directory Certificate Services (AD CS):
 
