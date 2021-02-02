@@ -226,7 +226,9 @@ False
 
 ## Configure LDAPS
 
-Using a self-signed certificate:
+### Using a Self-signed Certificate
+
+A self-signed certificate is the quickest way to get started if you can afford to ignore certificate validation. It possible to force validation of the self-signed certificate by installing it in the trusted Root CAs of the client, but this is not recommended.
 
 ```powershell
 $Domain = Get-ADDomain
@@ -257,16 +259,62 @@ renewServerCertificate: 1
 
 Set-Content -Path "ldap-renew.txt" -Value $LdapRenew -Force
 
-& ldifde -i -f ldaps-renew.txt
+& ldifde -i -f ldap-renew.txt
 ```
 
 You can now test that the LDAPS server accepts TLS connections using OpenSSL:
 
 ```powershell
-openssl s_client -connect "$Env:ComputerName.$DnsDomainName`:636" -showcerts
+openssl s_client -connect NOW-IT-DC.ad.now-it.works:636 -showcerts
 ```
 
-Using Active Directory Certificate Services (AD CS):
+### Using letsencrypt / ACME certificates
+
+Enable HTTP inbound traffic on TCP/80 in the system firewall:
+
+```powershell
+netsh advfirewall firewall add rule name="HTTP inbound" dir=in action=allow protocol=TCP localport=80
+```
+
+Check to see if TCP/80 is already used by another program:
+
+```powershell
+netstat -an | findstr :80
+```
+
+Unless you installed IIS on your domain controller (definitely not recommended), then you shouldn't see a line showing port 80 in the LISTENING state. The goal is to respond to the ACME HTTP challenge from the domain controller to obtain trusted certificates from [letsencrypt](https://letsencrypt.org/). This challenge has to be done over TCP/80, the standard port for HTTP, since custom ports are not allowed.
+
+Install the [Posh-ACME](https://github.com/rmbolger/Posh-ACME) PowerShell module:
+
+```powershell
+Install-Module -Name Posh-ACME -Scope AllUsers
+```
+
+Request a new certificate using a temporary web server:
+
+```powershell
+New-PACertificate 'NOW-IT-DC.ad.now-it.works' -Plugin WebSelfHost -AcceptTOS
+```
+
+Find the path to the certificate files:
+
+```powershell
+$Certificate = Get-PACertificate
+$CertPath = Split-Path -Path $Certificate.PfxFullChain -Parent
+```
+
+The certificate file you want to use is fullchain.pfx with 'poshacme' as the default password if you didn't specify one. Posh-ACME exports the certificate in various file formats (PEM, PFX, etc) so feel free to look at the output files to get a better understanding. Import the new certificate into the certificate store of the local machine, then copy it from there to the Active Directory certificate store:
+
+```powershell
+$CertificatePassword = $(ConvertTo-SecureString -AsPlainText 'poshacme' -Force)
+$ImportedCertificate = Import-PfxCertificate -FilePath $Certificate.PfxFullChain -CertStoreLocation 'cert:\LocalMachine\My' -Password $CertificatePassword
+$Thumbprint = $ImportedCertificate.Thumbprint
+$LocalCertStore = 'HKLM:/Software/Microsoft/SystemCertificates/My/Certificates'
+$NtdsCertStore = 'HKLM:/Software/Microsoft/Cryptography/Services/NTDS/SystemCertificates/My/Certificates'
+Copy-Item -Path "$LocalCertStore/$Thumbprint" -Destination $NtdsCertStore
+```
+
+### Using Active Directory Certificate Services (AD CS):
 
 References:
  * [Guide to setup LDAPS on Windows Server](https://www.miniorange.com/guide-to-setup-ldaps-on-windows-server)
@@ -282,3 +330,15 @@ Install-AdcsCertificationAuthority -CAType EnterpriseRootCa -Force
 ```
 
 Restart the domain controller to apply the changes.
+
+### Disable LDAP Unauthenticated Bind
+
+Surprisingly enough, [Active Directory still allows LDAP unauthenticated binds by default](https://blog.lithnet.io/2018/12/disabling-unauthenticated-binds-in.html) in Windows Server 2019. This means that an LDAP bind with an invalid password will fail, but an LDAP bind with an empty password will work. You probably want to disable it, especially if the domain controller is exposed on the internet for testing:
+
+```powershell
+$RootDSE = Get-ADRootDSE
+$ObjectPath = 'CN=Directory Service,CN=Windows NT,CN=Services,{0}' -f $RootDSE.ConfigurationNamingContext
+Set-ADObject -Identity $ObjectPath -Add @{ 'msDS-Other-Settings' = 'DenyUnauthenticatedBind=1' }
+```
+
+The change should be applied immediately, and future LDAP bind requests with an empty password will be denied.
